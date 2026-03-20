@@ -1,45 +1,21 @@
 const express = require('express');
-const mongoose = require('mongoose');
-const cors = require('cors');
-require('dotenv').config();
+const path = require('path');
 
 const app = express();
 
-// Middleware
-app.use(cors());
 app.use(express.json());
 
-// Routes
-const authRoutes = require('./routes/auth');
-const rideRoutes = require('./routes/rides');
-const passRoutes = require('./routes/pass');
-const userRoutes = require('./routes/user');
+app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/api/auth', authRoutes);
-app.use('/api/rides', rideRoutes);
-app.use('/api/pass', passRoutes);
-app.use('/api/user', userRoutes);
+const rideRouter = require('./routes/rides');
 
-// Test route
-app.get('/', (req, res) => {
-  res.json({ 
-    message: '⚡ Voltravel Backend is Live!',
-    version: '1.0.0',
-    status: 'running'
-  });
+app.use('/api/rides', rideRouter);
+
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-// Connect to MongoDB
-mongoose.connect(process.env.MONGODB_URI, {
-  serverSelectionTimeoutMS: 5000,
-  family: 4
-})
-  .then(() => {
-    console.log('✅ MongoDB Connected!');
-    app.listen(process.env.PORT, () => {
-      console.log(`⚡ Voltravel server running on port ${process.env.PORT}`);
-    });
-  })
-  .catch((err) => {
-    console.log('❌ MongoDB connection failed:', err.message);
-  });
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+});

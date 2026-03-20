@@ -1,7 +1,12 @@
 [build]
-builder = "nixpacks"
-buildCommand = "npm install"
+buildCommand = "npm install --production=false"
 
 [deploy]
 startCommand = "node index.js"
-restartPolicyType = "on_failure"
+```
+
+Press **Ctrl+S** then:
+```
+git add .
+git commit -m "fix: force npm install in toml"
+git push origin main
