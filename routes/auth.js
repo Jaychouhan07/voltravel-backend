@@ -84,5 +84,27 @@ router.post('/update-profile', async (req, res) => {
     res.status(400).json({ message: 'Update failed' });
   }
 });
+// POST /api/auth/demo-login
+router.post('/demo-login', async (req, res) => {
+  try {
+    const { phone } = req.body;
+    let user = await User.findOne({ phone });
+    if (!user) {
+      user = new User({ phone, name: 'Voltravel User' });
+      await user.save();
+    }
+    const token = jwt.sign(
+      { userId: user._id, phone: user.phone },
+      process.env.JWT_SECRET,
+      { expiresIn: '30d' }
+    );
+    res.json({ success: true, token, user: {
+      id: user._id, name: user.name,
+      phone: user.phone, hasPass: user.hasPass
+    }});
+  } catch (error) {
+    res.status(500).json({ message: 'Login failed' });
+  }
+});
 
 module.exports = router;
