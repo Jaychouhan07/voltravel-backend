@@ -1,0 +1,16 @@
+[build]
+builder = "nixpacks"
+buildCommand = "npm install"
+
+[deploy]
+startCommand = "node index.js"
+restartPolicyType = "on_failure"
+```
+
+Press **Ctrl + S**!
+
+Then:
+```
+git add .
+git commit -m "fix: add railway.toml config"
+git push origin main
